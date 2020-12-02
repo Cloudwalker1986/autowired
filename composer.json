@@ -1,0 +1,21 @@
+{
+    "name": "cloudwalker1986/autowired",
+    "description": "Autowired is a component which will help developers easily to load all required dependencies",
+    "type": "composer-plugin",
+    "require-dev": {
+        "phpunit/phpunit": "^9.4"
+    },
+    "license": "MIT License",
+    "authors": [
+        {
+            "name": "Dennis Munchausen",
+            "email": "dennis.munchausen@global-fashion-group.com"
+        }
+    ],
+    "minimum-stability": "alpha",
+    "require": {
+    },
+    "autoload": {
+        "psr-4": {"": "src/", "AutowiredTest\\": "test/AutowiredTest"}
+    }
+}
