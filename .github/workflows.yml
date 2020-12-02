@@ -1,0 +1,5 @@
+name: Unit-Tests
+on: [push]
+- name: PHPUnit tests
+      uses: php-actions/phpunit@v1
+
