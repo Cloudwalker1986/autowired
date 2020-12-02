@@ -1,7 +1,8 @@
 {
     "name": "autowired/autowired",
     "description": "Autowired is a component which will help developers easily to load all required dependencies",
-    "type": "composer-plugin",
+    "type": "library",
+    "keywords": ["autwired", "autoloading"],
     "require-dev": {
         "phpunit/phpunit": "^9.4",
         "php": "8.0.*"
@@ -16,6 +17,7 @@
     ],
     "minimum-stability": "stable",
     "require": {
+        "php": "8.0.*"
     },
     "autoload": {
         "psr-4": {
