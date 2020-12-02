@@ -1,5 +1,10 @@
 name: Unit-Tests
 on: [push]
-- name: PHPUnit tests
-      uses: php-actions/phpunit@v1
+
+jobs:
+  runs-on: ubuntu-latest
+  build:
+    - uses: php-actions/phpunit@v1
+    - name: Run tests
+      run: echo hello world
 
