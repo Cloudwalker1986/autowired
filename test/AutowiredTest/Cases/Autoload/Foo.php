@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace AutowiredTest\Example;
+namespace AutowiredTest\Cases\Autoload;
 
 class Foo
 {

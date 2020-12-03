@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace AutowiredTest\Example;
+namespace AutowiredTest\Cases\Autoload;
 
 use Autowired\Autowired;
 use Autowired\AutowiredHandler;
@@ -10,10 +10,10 @@ class WithAutowired
 {
     use AutowiredHandler;
 
-    #[Autowired]
+    #[Autowired(false)]
     private Foo $foo;
 
-    #[Autowired]
+    #[Autowired(false)]
     private Bar $bar;
 
     public function getFoo(): Foo
