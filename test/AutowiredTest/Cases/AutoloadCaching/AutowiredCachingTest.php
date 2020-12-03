@@ -3,6 +3,8 @@ declare(strict_types=1);
 
 namespace AutowiredTest\Cases\AutoloadCaching;
 
+use AutowiredTest\Cases\AutoloadCaching\ExampleClass\FooWithCaching;
+use AutowiredTest\Cases\AutoloadCaching\ExampleClass\FooWithoutCaching;
 use PHPUnit\Framework\TestCase;
 
 class AutowiredCachingTest extends TestCase
@@ -16,7 +18,7 @@ class AutowiredCachingTest extends TestCase
         sleep(1);
         $objectTwo = new FooWithCaching();
 
-        $this->assertEquals($objectTwo, $objectOne);
+        static::assertEquals($objectTwo, $objectOne);
     }
 
     /**
@@ -27,6 +29,6 @@ class AutowiredCachingTest extends TestCase
         $objectOne = new FooWithoutCaching();
         sleep(1);
         $objectTwo = new FooWithoutCaching();
-        $this->assertNotEquals($objectTwo, $objectOne);
+        static::assertNotEquals($objectTwo, $objectOne);
     }
 }

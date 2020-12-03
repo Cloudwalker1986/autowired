@@ -9,9 +9,9 @@ final class CachingService
 
     private array $cache = [];
 
-    public function store(mixed $class): void
+    public function store(mixed $class, ?string $className = null): void
     {
-        $this->cache[$class::class] = $class;
+        $this->cache[$className ?? $class::class] = $class;
     }
 
     public function get(mixed $class)
@@ -19,9 +19,19 @@ final class CachingService
         return $this->cache[$class::class];
     }
 
+    public function unset(string $className): void
+    {
+        unset($this->cache[$className]);
+    }
+
     public function contains(mixed $class): bool
     {
         return isset($this->cache[$class::class]);
+    }
+
+    public function flushCache(): void
+    {
+        $this->cache = [];
     }
 
     public static function getInstance(): CachingService

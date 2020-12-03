@@ -2,7 +2,7 @@
     "name": "autowired/autowired",
     "description": "Autowired is a component which will help developers easily to load all required dependencies",
     "type": "library",
-    "keywords": ["autwired", "autoloading", "dependency injection", "DI"],
+    "keywords": ["autwired", "autoloading", "dependency injection", "DI", "PHP 8"],
     "require-dev": {
         "phpunit/phpunit": "^9.4"
     },
