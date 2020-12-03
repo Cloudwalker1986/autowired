@@ -1,19 +1,19 @@
 <?php
 declare(strict_types=1);
 
-namespace AutowiredTest\Cases\Autoload;
+namespace AutowiredTest\Cases\AutoloadMocking\ExampleClass;
 
 use Autowired\Autowired;
 use Autowired\AutowiredHandler;
 
-class WithAutowired
+class WithNoConstructor
 {
     use AutowiredHandler;
 
-    #[Autowired(false)]
+    #[Autowired]
     private Foo $foo;
 
-    #[Autowired(false)]
+    #[Autowired]
     private Bar $bar;
 
     public function getFoo(): Foo

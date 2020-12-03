@@ -2,17 +2,17 @@
 declare(strict_types=1);
 
 
-namespace AutowiredTest\Cases\AutoloadCaching;
+namespace AutowiredTest\Cases\AutoloadCaching\ExampleClass;
 
 
 use Autowired\Autowired;
 use Autowired\AutowiredHandler;
 use DateTime;
 
-class FooWithCaching
+class FooWithoutCaching
 {
     use AutowiredHandler;
 
-    #[Autowired]
+    #[Autowired(false)]
     private DateTime $datetime;
 }

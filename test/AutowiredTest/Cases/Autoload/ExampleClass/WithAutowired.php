@@ -1,0 +1,28 @@
+<?php
+declare(strict_types=1);
+
+namespace AutowiredTest\Cases\Autoload\ExampleClass;
+
+use Autowired\Autowired;
+use Autowired\AutowiredHandler;
+
+class WithAutowired
+{
+    use AutowiredHandler;
+
+    #[Autowired(false)]
+    private Foo $foo;
+
+    #[Autowired(false)]
+    private Bar $bar;
+
+    public function getFoo(): Foo
+    {
+        return $this->foo;
+    }
+
+    public function getBar(): Bar
+    {
+        return $this->bar;
+    }
+}

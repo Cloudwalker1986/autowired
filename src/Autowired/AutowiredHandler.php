@@ -4,9 +4,20 @@ declare(strict_types=1);
 namespace Autowired;
 
 use Autowired\Cache\CachingService;
+use Autowired\Exception\InvalidArgumentException;
 
 trait AutowiredHandler
 {
+    private array $reservedTypes = [
+        "array",
+        "string",
+        "int",
+        "bool",
+        "float",
+        "object",
+        "stdClass",
+    ];
+
     public function __construct()
     {
         $this->autowired();
@@ -19,22 +30,21 @@ trait AutowiredHandler
         $cache = CachingService::getInstance();
 
         foreach ($reference->getProperties() as $property) {
-            if ($property->getAttributes(Autowired::class)) {
-
-                foreach ($property->getAttributes(Autowired::class) as $attribute) {
-                    /** @var Autowired $autowiredAttribute */
-                    $autowiredAttribute = $attribute->newInstance();
-                    $name = $property->getName();
-                    $className = $property->getType()->getName();
-
-                    $class = new $className();
-                    if ($autowiredAttribute->shouldCache()) {
-                        $this->withCache($class, $cache, $name);
-                        continue;
-                    }
-                    $this->$name = $class;
-                }
+            if (!$this->propertyAlreadyInitialized($property) && $property->getAttributes(Autowired::class)) {
+                $this->assignObjectToReference($property, $cache);
             }
+        }
+    }
+
+    private function propertyAlreadyInitialized(\ReflectionProperty $property): bool
+    {
+        $name = $property->getName();
+
+        try {
+            $this->$name;
+            return true;
+        } catch (\Throwable $e) {
+            return false;
         }
     }
 
@@ -44,6 +54,33 @@ trait AutowiredHandler
             $this->$name = $cache->get($class);
         } else {
             $cache->store($class);
+            $this->$name = $class;
+        }
+    }
+
+    /**
+     * @param \ReflectionProperty $property
+     * @param CachingService $cache
+     */
+    protected function assignObjectToReference(\ReflectionProperty $property, CachingService $cache): void
+    {
+        foreach ($property->getAttributes(Autowired::class) as $attribute) {
+
+            /** @var Autowired $autowiredAttribute */
+            $autowiredAttribute = $attribute->newInstance();
+
+            $type = $property->getType()->getName();
+
+            if (in_array($type, $this->reservedTypes, true)) {
+                throw new InvalidArgumentException('It is not possible to initialize a reserved type.');
+            }
+
+            $class = new $type();
+            $name = $property->getName();
+            if ($autowiredAttribute->shouldCache()) {
+                $this->withCache($class, $cache, $name);
+                continue;
+            }
             $this->$name = $class;
         }
     }
