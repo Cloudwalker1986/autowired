@@ -1,13 +1,8 @@
 <?php
 declare(strict_types=1);
 
-namespace AutowiredTest;
+namespace AutowiredTest\Cases\Autoload;
 
-use AutowiredTest\Example\Bar;
-use AutowiredTest\Example\WithAutowired;
-use AutowiredTest\Example\Foo;
-use AutowiredTest\Example\FooBar;
-use AutowiredTest\Example\Without;
 use PHPUnit\Framework\TestCase;
 
 class AutowiredTest extends TestCase
@@ -17,6 +12,8 @@ class AutowiredTest extends TestCase
      */
     public function autowiredSuccess(): void
     {
+        var_export(new Example());
+
         $autowired = new WithAutowired();
 
         static::assertInstanceOf(Foo::class, $autowired->getFoo());
@@ -29,9 +26,9 @@ class AutowiredTest extends TestCase
      */
     public function noAutowiredNumberOne(): void
     {
-        $withoutAutowired = new Without();
+        $withoutAutowired = new WithoutAutowired();
 
-        $this->expectExceptionMessage('Typed property AutowiredTest\Example\Without::$bar must not be accessed before initialization');
+        $this->expectExceptionMessage('Typed property AutowiredTest\Cases\Autoload\WithoutAutowired::$bar must not be accessed before initialization');
         static::assertNull($withoutAutowired->getBar());
     }
 
@@ -40,9 +37,9 @@ class AutowiredTest extends TestCase
      */
     public function noAutowiredNumberTwo(): void
     {
-        $withoutAutowired = new Without();
+        $withoutAutowired = new WithoutAutowired();
 
-        $this->expectExceptionMessage('Typed property AutowiredTest\Example\Without::$foo must not be accessed before initialization');
+        $this->expectExceptionMessage('Typed property AutowiredTest\Cases\Autoload\WithoutAutowired::$foo must not be accessed before initialization');
         static::assertNull($withoutAutowired->getFoo());
     }
 }

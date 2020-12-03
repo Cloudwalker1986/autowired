@@ -1,18 +1,18 @@
 <?php
 declare(strict_types=1);
 
-namespace AutowiredTest\Example;
+namespace AutowiredTest\Cases\Autoload;
 
 use Autowired\Autowired;
 
-class Without
+class WithoutAutowired
 {
-    private Foo $foo;
+    private ?Foo $foo;
 
     #[Autowired]
-    private Bar $bar;
+    private ?Bar $bar;
 
-    public function getFoo():? Foo
+    public function getFoo(): ?Foo
     {
         return $this->foo;
     }
