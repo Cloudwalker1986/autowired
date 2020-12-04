@@ -4,7 +4,11 @@ declare(strict_types=1);
 namespace Autowired;
 
 use Autowired\Cache\CachingService;
+use Autowired\Exception\InterfaceArgumentException;
 use Autowired\Exception\InvalidArgumentException;
+use ReflectionClass;
+use ReflectionException;
+use ReflectionProperty;
 
 trait AutowiredHandler
 {
@@ -59,10 +63,11 @@ trait AutowiredHandler
     }
 
     /**
-     * @param \ReflectionProperty $property
+     * @param ReflectionProperty $property
      * @param CachingService $cache
+     * @throws ReflectionException|InterfaceArgumentException
      */
-    protected function assignObjectToReference(\ReflectionProperty $property, CachingService $cache): void
+    protected function assignObjectToReference(ReflectionProperty $property, CachingService $cache): void
     {
         foreach ($property->getAttributes(Autowired::class) as $attribute) {
 
@@ -73,6 +78,16 @@ trait AutowiredHandler
 
             if (in_array($type, $this->reservedTypes, true)) {
                 throw new InvalidArgumentException('It is not possible to initialize a reserved type.');
+            }
+
+            $typed = new ReflectionClass($type);
+
+            if ($typed->isInterface()) {
+                $type = $autowiredAttribute->getConcreteClass();
+
+                if ($type === null) {
+                    throw new InterfaceArgumentException('It is not possible to initialize a pure interface.');
+                }
             }
 
             $class = new $type();

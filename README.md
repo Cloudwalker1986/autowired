@@ -21,6 +21,7 @@ As dev requirement, if you want to contribute, phpunit version 9.4.* is required
 - Easy dependency injection without define your constructor
 - Specify if your required dependency can be a shared instance or create everytime a new instance of the dependency.
 - Easy to mock autowired object for your test purpose.
+- Dependency injection using an interface
 
 
 ## How to use it ?
@@ -52,6 +53,27 @@ AutowiredTest\Cases\Autoload\Example::__set_state(array(
      'timezone' => 'UTC',
   )),
 ))
+```
+
+## How to inject a class but using an interface?
+
+With version 0.0.4 we introduce a new parameter for the Autowired class: $concreteClass
+Specify this parameter directly or full fill non mandatory parameters. Take a look to the example below.
+
+```
+class Bar
+{
+    use AutowiredHandler;
+
+    #[Autowired(concreteClass: Foo::class)]
+    private FooInterface $foo;
+
+    #[Autowired(cachingAllowed: true, concreteClass: Foo::class)]
+    private FooInterface $foo;
+
+    #[Autowired(false, Foo::class)]
+    private FooInterface $foo;
+}
 ```
 
 ## How to mock classes when they will be autowired?
