@@ -76,6 +76,35 @@ class Bar
 }
 ```
 
+## How to autowire a class with a factory method?
+
+With the version 0.0.5 we introduced a new parameter for the Autowired class: $staticFunction
+Specify this parameter directly or full fill non mandatory parameters. Take a look to the example
+
+```
+class Bar
+{
+    use AutowiredHandler;
+
+    #[Autowired(staticFunction: "getInstance")]
+    private Foo $foo;
+    
+    #[Autowired(concreteClass: Foo::class, staticFunction: "getInstance")]
+    private FooInterface $fooWithInterface;
+
+    public function getFoo(): Foo
+    {
+        return $this->foo;
+    }
+
+    public function getFooWithInterface(): FooInterface
+    {
+        return $this->fooWithInterface;
+    }
+}
+```
+
+
 ## How to mock classes when they will be autowired?
 
 Actually there are two possibilities.
