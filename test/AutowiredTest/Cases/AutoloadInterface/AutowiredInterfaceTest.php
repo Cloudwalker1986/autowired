@@ -4,8 +4,8 @@ declare(strict_types=1);
 namespace AutowiredTest\Cases\AutoloadInterface;
 
 use Autowired\Exception\InterfaceArgumentException;
-use AutowiredTest\Cases\AutoloadInterface\Example\AutowiredInterfaceWithoutTypeDeclaration;
-use AutowiredTest\Cases\AutoloadInterface\Example\AutowiredInterfaceWithTypeDeclaration;
+use AutowiredTest\Cases\AutoloadInterface\ExampleClass\AutowiredInterfaceWithoutTypeDeclaration;
+use AutowiredTest\Cases\AutoloadInterface\ExampleClass\AutowiredInterfaceWithTypeDeclaration;
 use PHPUnit\Framework\TestCase;
 
 class AutowiredInterfaceTest extends TestCase

@@ -8,7 +8,9 @@ use Autowired\Exception\InterfaceArgumentException;
 use Autowired\Exception\InvalidArgumentException;
 use ReflectionClass;
 use ReflectionException;
+use ReflectionNamedType;
 use ReflectionProperty;
+use Throwable;
 
 trait AutowiredHandler
 {
@@ -22,14 +24,22 @@ trait AutowiredHandler
         "stdClass",
     ];
 
+    /**
+     * @throws InterfaceArgumentException
+     * @throws ReflectionException
+     */
     public function __construct()
     {
         $this->autowired();
     }
 
+    /**
+     * @throws InterfaceArgumentException
+     * @throws ReflectionException
+     */
     protected function autowired(): void
     {
-        $reference = new \ReflectionClass($this);
+        $reference = new ReflectionClass($this);
 
         $cache = CachingService::getInstance();
 
@@ -40,15 +50,17 @@ trait AutowiredHandler
         }
     }
 
-    private function propertyAlreadyInitialized(\ReflectionProperty $property): bool
+    private function propertyAlreadyInitialized(ReflectionProperty $property): bool
     {
         $name = $property->getName();
 
+        $e = null;
+
         try {
             $this->$name;
-            return true;
-        } catch (\Throwable $e) {
-            return false;
+        } catch (Throwable $e) {
+        } finally {
+            return $e === null;
         }
     }
 
@@ -74,23 +86,15 @@ trait AutowiredHandler
             /** @var Autowired $autowiredAttribute */
             $autowiredAttribute = $attribute->newInstance();
 
-            $type = $property->getType()->getName();
+            $type = $this->getObjectType($property, $autowiredAttribute);
 
-            if (in_array($type, $this->reservedTypes, true)) {
-                throw new InvalidArgumentException('It is not possible to initialize a reserved type.');
+            if ($autowiredAttribute->hasStaticFunction()) {
+                $method = $autowiredAttribute->getStaticFunction();
+                $class = $type::$method();
+            } else {
+                $class = new $type();
             }
 
-            $typed = new ReflectionClass($type);
-
-            if ($typed->isInterface()) {
-                $type = $autowiredAttribute->getConcreteClass();
-
-                if ($type === null) {
-                    throw new InterfaceArgumentException('It is not possible to initialize a pure interface.');
-                }
-            }
-
-            $class = new $type();
             $name = $property->getName();
             if ($autowiredAttribute->shouldCache()) {
                 $this->withCache($class, $cache, $name);
@@ -98,5 +102,36 @@ trait AutowiredHandler
             }
             $this->$name = $class;
         }
+    }
+
+    /**
+     * @throws InterfaceArgumentException
+     * @throws ReflectionException
+     */
+    protected function getObjectType(ReflectionProperty $property, Autowired $autowiredAttribute): string
+    {
+        /** @var ReflectionNamedType $classType */
+        $classType = $property->getType();
+
+        if ($classType === null) {
+            throw new InvalidArgumentException('The type is missing and can´t be autowired');
+        }
+        $type = $classType->getName();
+
+        if (in_array($type, $this->reservedTypes, true)) {
+            throw new InvalidArgumentException('It is not possible to initialize a reserved type.');
+        }
+
+        $typed = new ReflectionClass($type);
+
+        if ($typed->isInterface()) {
+            $type = $autowiredAttribute->getConcreteClass();
+
+            if ($type === null) {
+                throw new InterfaceArgumentException('It is not possible to initialize a pure interface.');
+            }
+        }
+
+        return $type;
     }
 }
