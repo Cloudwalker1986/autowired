@@ -110,6 +110,7 @@ trait AutowiredHandler
      */
     protected function getObjectType(ReflectionProperty $property, Autowired $autowiredAttribute): string
     {
+
         /** @var ReflectionNamedType $classType */
         $classType = $property->getType();
 
@@ -125,13 +126,24 @@ trait AutowiredHandler
         $typed = new ReflectionClass($type);
 
         if ($typed->isInterface()) {
-            $type = $autowiredAttribute->getConcreteClass();
-
-            if ($type === null) {
-                throw new InterfaceArgumentException('It is not possible to initialize a pure interface.');
-            }
+            $type = $this->handleInterface($autowiredAttribute);
+        } else {
+            $type = $typed->getName();
         }
 
         return $type;
+    }
+
+    /**
+     * @throws InterfaceArgumentException
+     */
+    protected function handleInterface(Autowired $autowiredAttribute)
+    {
+        $className = $autowiredAttribute->getConcreteClass();
+        if (!$className) {
+            throw new InterfaceArgumentException('It is not possible to initialize a pure interface.');
+        }
+
+        return $className;
     }
 }

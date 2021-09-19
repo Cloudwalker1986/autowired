@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace AutowiredTest\Cases\AutoloadInterface;
 
 use Autowired\Exception\InterfaceArgumentException;
+use AutowiredTest\Cases\AutoloadInterface\ExampleClass\AutowiredInterfaceWithInterfaceHandler;
 use AutowiredTest\Cases\AutoloadInterface\ExampleClass\AutowiredInterfaceWithoutTypeDeclaration;
 use AutowiredTest\Cases\AutoloadInterface\ExampleClass\AutowiredInterfaceWithTypeDeclaration;
 use PHPUnit\Framework\TestCase;
@@ -19,6 +20,17 @@ class AutowiredInterfaceTest extends TestCase
 
         static::assertEquals('Got injected via an interface', $bar->getFoo()->getMessage());
     }
+
+    /**
+     * @test
+     */
+    public function autowiredClassUsingInterfaceWithInterfaceHandler(): void
+    {
+        $bar = new AutowiredInterfaceWithInterfaceHandler();
+
+        static::assertEquals('Got injected via an interface handler', $bar->getFoo()->getMessage());
+    }
+
     /**
      * @test
      */
