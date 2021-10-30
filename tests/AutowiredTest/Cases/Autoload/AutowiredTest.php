@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace AutowiredTest\Cases\Autoload;
+namespace AutowiredTests\Cases\Autoload;
 
 use Autowired\Autowired;
 use Autowired\AutowiredHandler;
