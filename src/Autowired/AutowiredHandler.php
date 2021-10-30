@@ -89,6 +89,22 @@ trait AutowiredHandler
 
             $type = $this->getObjectType($property, $autowiredAttribute);
 
+            $name = $property->getName();
+            if ($autowiredAttribute->getConcreteClass() !== null) {
+
+                if ($cache->contains($autowiredAttribute->getConcreteClass())) {
+                    $class = $cache->get($autowiredAttribute->getConcreteClass());
+                    $method = $autowiredAttribute->getStaticFunction();
+                    $this->$name = $class::$method();
+                    continue;
+                }
+
+                if ($cache->contains($type)) {
+                    $this->$name = $cache->get($type);
+                    continue;
+                }
+            }
+
             if ($autowiredAttribute->hasStaticFunction()) {
                 $method = $autowiredAttribute->getStaticFunction();
                 $class = $type::$method();
@@ -96,7 +112,6 @@ trait AutowiredHandler
                 $class = new $type();
             }
 
-            $name = $property->getName();
             if ($autowiredAttribute->shouldCache()) {
                 $this->withCache($class, $cache, $name);
                 continue;
