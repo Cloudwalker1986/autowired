@@ -14,9 +14,9 @@ final class CachingService
         $this->cache[$className ?? $class::class] = $class;
     }
 
-    public function get(mixed $class)
+    public function get(string $class)
     {
-        return $this->cache[$class::class];
+        return $this->cache[$class];
     }
 
     public function unset(string $className): void
@@ -24,9 +24,9 @@ final class CachingService
         unset($this->cache[$className]);
     }
 
-    public function contains(mixed $class): bool
+    public function contains(string $class): bool
     {
-        return isset($this->cache[$class::class]);
+        return isset($this->cache[$class]);
     }
 
     public function flushCache(): void

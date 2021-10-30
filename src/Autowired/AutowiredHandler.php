@@ -64,10 +64,11 @@ trait AutowiredHandler
         }
     }
 
-    private function withCache(mixed $class, CachingService $cache, string $name): void
+    private function withCache(string|object $class, CachingService $cache, string $name): void
     {
-        if ($cache->contains($class)) {
-            $this->$name = $cache->get($class);
+        $className = (is_string($class) ? $class : $class::class);
+        if ($cache->contains($className)) {
+            $this->$name = $cache->get($className);
         } else {
             $cache->store($class);
             $this->$name = $class;
