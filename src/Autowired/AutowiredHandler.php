@@ -146,4 +146,9 @@ trait AutowiredHandler
 
         return $className;
     }
+
+    protected function getReservedParameterTypes(): array
+    {
+        return $this->reservedTypes;
+    }
 }
