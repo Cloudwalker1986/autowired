@@ -126,7 +126,7 @@ trait AutowiredHandler
         $typed = new ReflectionClass($type);
 
         if ($typed->isInterface()) {
-            $type = $this->handleInterface($autowiredAttribute);
+            $type = $this->handleInterface($autowiredAttribute, $typed);
         } else {
             $type = $typed->getName();
         }
@@ -137,7 +137,7 @@ trait AutowiredHandler
     /**
      * @throws InterfaceArgumentException
      */
-    protected function handleInterface(Autowired $autowiredAttribute)
+    protected function handleInterface(Autowired $autowiredAttribute, \ReflectionClass $typed): string
     {
         $className = $autowiredAttribute->getConcreteClass();
         if (!$className) {
