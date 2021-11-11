@@ -112,6 +112,8 @@ trait AutowiredHandler
                 $class = new $type();
             }
 
+            $this->handleCustomAttributes($class);
+
             if ($autowiredAttribute->shouldCache()) {
                 $this->withCache($class, $cache, $name);
                 continue;
@@ -167,4 +169,6 @@ trait AutowiredHandler
     {
         return $this->reservedTypes;
     }
+
+    protected function handleCustomAttributes(Object $class): void {}
 }
