@@ -6,12 +6,14 @@ namespace Autowired;
 use Autowired\Cache\CachingService;
 use Autowired\Exception\InterfaceArgumentException;
 use Autowired\Exception\InvalidArgumentException;
+use JetBrains\PhpStorm\Deprecated;
 use ReflectionClass;
 use ReflectionException;
 use ReflectionNamedType;
 use ReflectionProperty;
 use Throwable;
 
+#[Deprecated('This handler will be removed in version 2.0.', since: '8.1')]
 trait AutowiredHandler
 {
     private array $reservedTypes = [

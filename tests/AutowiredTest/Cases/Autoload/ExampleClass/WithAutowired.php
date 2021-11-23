@@ -8,8 +8,6 @@ use Autowired\AutowiredHandler;
 
 class WithAutowired
 {
-    use AutowiredHandler;
-
     #[Autowired(false)]
     private Foo $foo;
 

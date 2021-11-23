@@ -8,8 +8,6 @@ use Autowired\AutowiredHandler;
 
 class FooWithFactory
 {
-    use AutowiredHandler;
-
     #[Autowired(staticFunction: "getInstance")]
     private Foo $foo;
 

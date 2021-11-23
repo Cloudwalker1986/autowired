@@ -8,18 +8,11 @@ use Autowired\AutowiredHandler;
 
 class AutowiredInterfaceWithInterfaceHandler
 {
-    use AutowiredHandler;
-
-    #[Autowired]
+    #[Autowired(false)]
     private FooInterface $foo;
 
     public function getFoo(): FooInterface
     {
         return $this->foo;
-    }
-
-    protected function handleInterface()
-    {
-        return FooBar::class;
     }
 }
