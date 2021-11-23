@@ -11,8 +11,6 @@ use DateTime;
 
 class FooWithCaching
 {
-    use AutowiredHandler;
-
     #[Autowired]
     private DateTime $datetime;
 }

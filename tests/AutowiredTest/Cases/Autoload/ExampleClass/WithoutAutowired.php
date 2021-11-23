@@ -9,7 +9,7 @@ class WithoutAutowired
 {
     private ?Foo $foo;
 
-    #[Autowired]
+    #[Autowired(false)]
     private ?Bar $bar;
 
     public function getFoo(): ?Foo

@@ -8,9 +8,7 @@ use Autowired\AutowiredHandler;
 
 class AutowiredInterfaceWithTypeDeclaration
 {
-    use AutowiredHandler;
-
-    #[Autowired(cachingAllowed: true, concreteClass: Foo::class)]
+    #[Autowired(cachingAllowed: false, concreteClass: Foo::class)]
     private FooInterface $foo;
 
     public function getFoo(): FooInterface

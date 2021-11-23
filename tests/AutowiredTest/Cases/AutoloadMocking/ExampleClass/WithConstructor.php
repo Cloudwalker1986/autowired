@@ -8,19 +8,11 @@ use Autowired\AutowiredHandler;
 
 class WithConstructor
 {
-    use AutowiredHandler;
-
     #[Autowired]
     private ?Foo $foo;
 
     #[Autowired]
     private ?Bar $bar;
-
-    public function __construct(?Foo $foo)
-    {
-        $this->foo = $foo;
-        $this->autowired();
-    }
 
     public function getFoo(): Foo
     {

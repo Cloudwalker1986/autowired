@@ -28,8 +28,6 @@ As dev requirement, if you want to contribute, phpunit version 9.4.* is required
 ```
 class Example {
     
-    use AutowiredHandler;
-
     #[Autowired]  // Cached object should be used
     private Foo $foo;
 
@@ -37,7 +35,9 @@ class Example {
     private DateTime $dateTime;   
 }
 
-$example = new Example();
+$container = DependencyContainer::getInstance();
+
+$example = $container->get(Example::class));
 var_export($example);
 ```
 Output
@@ -63,8 +63,6 @@ Specify this parameter directly or full fill non mandatory parameters. Take a lo
 ```
 class Bar
 {
-    use AutowiredHandler;
-
     #[Autowired(concreteClass: Foo::class)]
     private FooInterface $foo;
 
@@ -79,13 +77,11 @@ class Bar
 ## How to autowire a class with a factory method?
 
 With the version 0.0.5 we introduced a new parameter for the Autowired class: $staticFunction
-Specify this parameter directly or full fill non mandatory parameters. Take a look to the example
+Specify this parameter directly or fulfill none mandatory parameters. Take a look to the example
 
 ```
 class Bar
 {
-    use AutowiredHandler;
-
     #[Autowired(staticFunction: "getInstance")]
     private Foo $foo;
     
@@ -109,24 +105,16 @@ class Bar
 
 Actually there are two possibilities.
 
-1. Define a constructor of your main class but ensure that all the parameters which could be autoloaded are not mandatory. The Autowired component will only try to load the related objects only when the property has his initial value (null). Please take a look to the example
+1. Define your mocks and put them as an array as a second parameter when you call DependencyContainer::get(CLASSNAME, [MOCK1, MOCK2 ...]). The Autowired component will only try to load the related objects only when the property has his initial value (null). Please take a look to the example
    
 ```
 class WithConstructor
 {
-    use AutowiredHandler;
-
     #[Autowired]
     private ?Foo $foo;
 
     #[Autowired]
     private ?Bar $bar;
-
-    public function __construct(?Foo $foo)
-    {
-        $this->foo = $foo;
-        $this->autowired();
-    }
 
     public function getFoo(): ?Foo
     {
@@ -136,25 +124,38 @@ class WithConstructor
 
 Meanwhile in the test method do the following
 
+
+private DependencyContainer $container;
+
+protected function setUp(): void
+{
+    $this->container = DependencyContainer::getInstance();
+    parent::setUp();
+}
+
+protected function tearDown(): void
+{
+    $this->container->flush();
+    parent::tearDown();
+}
+    
 public function autoloadWithMockedClassAndConstructor(): void
 {
     $mockedClass = $this->getMockBuilder(Foo::class)
         ->getMock();
 
-    $mainClassWithMockedObject = new WithConstructor($mockedClass);
+    $mainClassWithMockedObject = $this-container->get(WithConstructor::class,[$mockedClass]);
 
     static::assertNotEquals($mockedClass::class, $mainClassWithMockedObject->getFoo()::class);
 }
 ```
 
 
-2. With version 0.0.3 is it possible to use the Autowired ServiceCache in order to declare your mock instance and then provide the class name as a key to the service cache when now the original class will be autowired the assigned value will be your mock instance. Please take a look to the example below.
+2. The other way is to define your mock and call DependencyContainer::store() function in order to place the mock behind the original class name 
 
 ```
 class WithNoConstructor
 {
-    use AutowiredHandler;
-
     #[Autowired]
     private Foo $foo;
 
@@ -187,28 +188,5 @@ public function autoloadWithMockedClassAndWithoutConstructor(): void
     static::assertNotEquals(Foo::class, $mainClassWithMockedObject->getFoo()::class);
     static::assertEquals(Bar::class, $mainClassWithMockedObject->getBar()::class);
     CachingService::getInstance()->flushCache();
-}
-```
-
-## Workaround
-Currently, the trait AutowiredHandler is overwriting the construct method of the class where you want to use the autowired component.
-If you still need the original constructor due to pre operation before the instance got back assigned to your variable than you need to call first $this->autowired().
-
-Take a look to the example:
-```
-class Example {
-    
-    use AutowiredHandler;
-
-    #[Autowired]  // Cached object should be used
-    private UserService $userService;   
-    
-    private array $users;
-    
-    public function __construct() 
-    {
-        $this->autowired();
-        $this->users = $this->userService->getAll();
-    }
 }
 ```

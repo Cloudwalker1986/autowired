@@ -8,8 +8,6 @@ use Autowired\AutowiredHandler;
 
 class AutowiredInterfaceWithoutTypeDeclaration
 {
-    use AutowiredHandler;
-
-    #[Autowired]
+    #[Autowired(false)]
     private FooInterface $foo;
 }
