@@ -3,26 +3,11 @@ declare(strict_types=1);
 
 namespace AutowiredTest\Cases\AutoloadFactory;
 
-use Autowired\DependencyContainer;
+use AutowiredTest\AutowireTestCase;
 use AutowiredTest\Cases\AutoloadFactory\ExampleClass\FooWithFactory;
-use PHPUnit\Framework\TestCase;
 
-class AutoloadWithFactoryCallTest extends TestCase
+class AutoloadWithFactoryCallTest extends AutowireTestCase
 {
-    private DependencyContainer $container;
-
-    protected function setUp(): void
-    {
-        $this->container = DependencyContainer::getInstance();
-        parent::setUp();
-    }
-
-    protected function tearDown(): void
-    {
-        $this->container->flush();
-        parent::tearDown();
-    }
-
     /**
      * @test
      */

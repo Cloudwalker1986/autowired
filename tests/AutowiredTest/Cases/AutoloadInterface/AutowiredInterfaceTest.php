@@ -7,28 +7,14 @@ use Autowired\Autowired;
 use Autowired\DependencyContainer;
 use Autowired\Exception\InvalidArgumentException;
 use Autowired\Handler\InterfaceHandler;
+use AutowiredTest\AutowireTestCase;
 use AutowiredTest\Cases\AutoloadInterface\ExampleClass\AutowiredInterfaceWithInterfaceHandler;
 use AutowiredTest\Cases\AutoloadInterface\ExampleClass\AutowiredInterfaceWithoutTypeDeclaration;
 use AutowiredTest\Cases\AutoloadInterface\ExampleClass\AutowiredInterfaceWithTypeDeclaration;
 use AutowiredTest\Cases\AutoloadInterface\ExampleClass\FooBar;
-use PHPUnit\Framework\TestCase;
 
-class AutowiredInterfaceTest extends TestCase
+class AutowiredInterfaceTest extends AutowireTestCase
 {
-    private DependencyContainer $container;
-
-    protected function setUp(): void
-    {
-        $this->container = DependencyContainer::getInstance();
-        parent::setUp();
-    }
-
-    protected function tearDown(): void
-    {
-        $this->container->flush();
-        parent::tearDown();
-    }
-
     /**
      * @test
      */

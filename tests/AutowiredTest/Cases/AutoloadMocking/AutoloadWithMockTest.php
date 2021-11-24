@@ -3,29 +3,14 @@ declare(strict_types=1);
 
 namespace AutowiredTest\Cases\AutoloadMocking;
 
-use Autowired\Cache\CachingService;
-use Autowired\DependencyContainer;
+use AutowiredTest\AutowireTestCase;
 use AutowiredTest\Cases\AutoloadMocking\ExampleClass\Bar;
 use AutowiredTest\Cases\AutoloadMocking\ExampleClass\Foo;
 use AutowiredTest\Cases\AutoloadMocking\ExampleClass\WithConstructor;
 use AutowiredTest\Cases\AutoloadMocking\ExampleClass\WithNoConstructor;
-use PHPUnit\Framework\TestCase;
 
-class AutoloadWithMockTest extends TestCase
+class AutoloadWithMockTest extends AutowireTestCase
 {
-    private DependencyContainer $container;
-
-    protected function setUp(): void
-    {
-        $this->container = DependencyContainer::getInstance();
-        parent::setUp();
-    }
-
-    protected function tearDown(): void
-    {
-        $this->container->flush();
-        parent::tearDown();
-    }
     /**
      * @test
      */

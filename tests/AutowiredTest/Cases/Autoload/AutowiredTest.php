@@ -7,33 +7,21 @@ use Autowired\Autowired;
 use Autowired\AutowiredHandler;
 use Autowired\DependencyContainer;
 use Autowired\Exception\InvalidArgumentException;
+use AutowiredTest\AutowireTestCase;
 use AutowiredTest\Cases\Autoload\ExampleClass\Bar;
 use AutowiredTest\Cases\Autoload\ExampleClass\Foo;
 use AutowiredTest\Cases\Autoload\ExampleClass\FooBar;
 use AutowiredTest\Cases\Autoload\ExampleClass\WithAutowired;
 use AutowiredTest\Cases\Autoload\ExampleClass\WithoutAutowired;
-use PHPUnit\Framework\TestCase;
 
-class AutowiredTest extends TestCase
+class AutowiredTest extends AutowireTestCase
 {
-    protected function setUp(): void
-    {
-        DependencyContainer::getInstance();
-        parent::setUp();
-    }
-
-    protected function tearDown(): void
-    {
-        DependencyContainer::getInstance()->flush();
-        parent::tearDown();
-    }
-
     /**
      * @test
      */
     public function autowiredSuccess(): void
     {
-        $autowired = DependencyContainer::getInstance()->get(WithAutowired::class);
+        $autowired = $this->container->get(WithAutowired::class);
 
         static::assertEquals(Foo::class, $autowired->getFoo()::class);
         static::assertEquals(Bar::class, $autowired->getBar()::class);
@@ -45,7 +33,7 @@ class AutowiredTest extends TestCase
      */
     public function noAutowiredNumberOne(): void
     {
-        $withoutAutowired = DependencyContainer::getInstance()->get(WithoutAutowired::class);
+        $withoutAutowired = $this->container->get(WithoutAutowired::class);
         $this->expectExceptionMessage('Typed property AutowiredTest\Cases\Autoload\ExampleClass\WithoutAutowired::$foo must not be accessed before initialization');
         static::assertNull($withoutAutowired->getFoo());
     }
@@ -55,7 +43,7 @@ class AutowiredTest extends TestCase
      */
     public function noAutowiredNumberTwo(): void
     {
-        $withoutAutowired = DependencyContainer::getInstance()->get(WithoutAutowired::class);
+        $withoutAutowired = $this->container->get(WithoutAutowired::class);
 
         $this->expectExceptionMessage('Typed property AutowiredTest\Cases\Autoload\ExampleClass\WithoutAutowired::$foo must not be accessed before initialization');
         static::assertNull($withoutAutowired->getFoo());

@@ -3,6 +3,9 @@ declare(strict_types=1);
 
 namespace Autowired\Cache;
 
+use JetBrains\PhpStorm\Deprecated;
+
+#[Deprecated('This handler will be removed in version 2.0.', since: '8.1')]
 final class CachingService
 {
     private static ?CachingService $instance = null;

@@ -58,6 +58,13 @@ class AutowireHandler
                 $this->assignObjectToReference($property, $object);
             }
         }
+
+        /** @var CustomHandlerInterface $handler */
+        while($handler = $this->customHandlers->get()) {
+            $this->customHandlers->next();
+            $handler->handle($object);
+        }
+        $this->customHandlers->rewind();
     }
 
     private function propertyAlreadyInitialized(ReflectionProperty $property, object $object): bool

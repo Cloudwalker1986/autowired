@@ -25,7 +25,7 @@ As dev requirement, if you want to contribute, phpunit version 9.4.* is required
 
 
 ## How to use it ?
-```
+```php
 class Example {
     
     #[Autowired]  // Cached object should be used
@@ -41,7 +41,7 @@ $example = $container->get(Example::class));
 var_export($example);
 ```
 Output
-```
+```php
 AutowiredTest\Cases\Autoload\Example::__set_state(array(
    'foo' => 
   Foo::__set_state(array(
@@ -60,7 +60,7 @@ AutowiredTest\Cases\Autoload\Example::__set_state(array(
 With version 0.0.4 we introduce a new parameter for the Autowired class: $concreteClass
 Specify this parameter directly or full fill non mandatory parameters. Take a look to the example below.
 
-```
+```php
 class Bar
 {
     #[Autowired(concreteClass: Foo::class)]
@@ -79,7 +79,7 @@ class Bar
 With the version 0.0.5 we introduced a new parameter for the Autowired class: $staticFunction
 Specify this parameter directly or fulfill none mandatory parameters. Take a look to the example
 
-```
+```php
 class Bar
 {
     #[Autowired(staticFunction: "getInstance")]
@@ -106,8 +106,8 @@ class Bar
 Actually there are two possibilities.
 
 1. Define your mocks and put them as an array as a second parameter when you call DependencyContainer::get(CLASSNAME, [MOCK1, MOCK2 ...]). The Autowired component will only try to load the related objects only when the property has his initial value (null). Please take a look to the example
-   
-```
+
+```php
 class WithConstructor
 {
     #[Autowired]
@@ -153,7 +153,7 @@ public function autoloadWithMockedClassAndConstructor(): void
 
 2. The other way is to define your mock and call DependencyContainer::store() function in order to place the mock behind the original class name 
 
-```
+```php
 class WithNoConstructor
 {
     #[Autowired]
@@ -188,5 +188,42 @@ public function autoloadWithMockedClassAndWithoutConstructor(): void
     static::assertNotEquals(Foo::class, $mainClassWithMockedObject->getFoo()::class);
     static::assertEquals(Bar::class, $mainClassWithMockedObject->getBar()::class);
     CachingService::getInstance()->flushCache();
+}
+```
+With the version 1.6.0 we introduced a new attribute called AfterConstruct
+This attribute will ensure that your method will be executed once when your object got full instantiated 
+
+```php
+class Foo
+{
+    private int $value = 0;
+
+    #[Autowired]
+    private Bar $bar;
+
+    #[AfterConstruct]
+    public function hook(): void
+    {
+        $this->value++;
+    }
+
+    public function getValue(): int
+    {
+        return $this->value;
+    }
+}
+
+
+class AutoloadWithHooksTest extends AutowireTestCase
+{
+    /**
+     * @test
+     */
+    public function afterConstructCase(): void
+    {
+        /** @var Foo $foo */
+        $foo = $this->container->get(Foo::class);
+        $this->assertEquals(1, $foo->getValue());
+    }
 }
 ```

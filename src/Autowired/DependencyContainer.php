@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace Autowired;
 
+use Autowired\Handler\AfterConstructHandler;
 use Autowired\Handler\AutowireHandler;
 use Autowired\Handler\CustomHandlerInterface;
 use Autowired\Handler\InterfaceHandler;
@@ -24,6 +25,7 @@ class DependencyContainer
     private function __construct()
     {
         $this->autowireHandler = new AutowireHandler($this);
+        $this->autowireHandler->addCustomHandler(new AfterConstructHandler());
         $this->cache = new HashMap();
     }
 
