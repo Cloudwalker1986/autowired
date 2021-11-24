@@ -3,27 +3,12 @@ declare(strict_types=1);
 
 namespace AutowiredTest\Cases\AutoloadCaching;
 
-use Autowired\DependencyContainer;
+use AutowiredTest\AutowireTestCase;
 use AutowiredTest\Cases\AutoloadCaching\ExampleClass\FooWithCaching;
 use AutowiredTest\Cases\AutoloadCaching\ExampleClass\FooWithoutCaching;
-use PHPUnit\Framework\TestCase;
 
-class AutowiredCachingTest extends TestCase
+class AutowiredCachingTest extends AutowireTestCase
 {
-    private DependencyContainer $container;
-
-    protected function setUp(): void
-    {
-        $this->container = DependencyContainer::getInstance();
-        parent::setUp();
-    }
-
-    protected function tearDown(): void
-    {
-        $this->container->flush();
-        parent::tearDown();
-    }
-
     /**
      * @test
      */
