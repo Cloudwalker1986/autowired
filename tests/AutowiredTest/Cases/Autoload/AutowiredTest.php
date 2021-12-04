@@ -1,16 +1,20 @@
 <?php
 declare(strict_types=1);
 
-namespace AutowiredTests\Cases\Autoload;
+namespace AutowiredTest\Cases\Autoload;
 
-use Autowired\Autowired;
-use Autowired\AutowiredHandler;
-use Autowired\DependencyContainer;
 use Autowired\Exception\InvalidArgumentException;
 use AutowiredTest\AutowireTestCase;
 use AutowiredTest\Cases\Autoload\ExampleClass\Bar;
 use AutowiredTest\Cases\Autoload\ExampleClass\Foo;
 use AutowiredTest\Cases\Autoload\ExampleClass\FooBar;
+use AutowiredTest\Cases\Autoload\ExampleClass\ReservedTypeArray;
+use AutowiredTest\Cases\Autoload\ExampleClass\ReservedTypeBool;
+use AutowiredTest\Cases\Autoload\ExampleClass\ReservedTypeFloat;
+use AutowiredTest\Cases\Autoload\ExampleClass\ReservedTypeInt;
+use AutowiredTest\Cases\Autoload\ExampleClass\ReservedTypeObject;
+use AutowiredTest\Cases\Autoload\ExampleClass\ReservedTypeStdClass;
+use AutowiredTest\Cases\Autoload\ExampleClass\ReservedTypeString;
 use AutowiredTest\Cases\Autoload\ExampleClass\WithAutowired;
 use AutowiredTest\Cases\Autoload\ExampleClass\WithoutAutowired;
 
@@ -56,13 +60,7 @@ class AutowiredTest extends AutowireTestCase
     {
         $this->expectExceptionMessage("It is not possible to initialize a reserved type.");
         $this->expectException(InvalidArgumentException::class);
-        new class {
-
-            use AutowiredHandler;
-
-            #[Autowired]
-            private string $type;
-        };
+        $this->container->get(ReservedTypeString::class);
     }
 
     /**
@@ -72,13 +70,7 @@ class AutowiredTest extends AutowireTestCase
     {
         $this->expectExceptionMessage("It is not possible to initialize a reserved type.");
         $this->expectException(InvalidArgumentException::class);
-        new class {
-
-            use AutowiredHandler;
-
-            #[Autowired]
-            private array $type;
-        };
+        $this->container->get(ReservedTypeArray::class);
     }
 
     /**
@@ -88,13 +80,7 @@ class AutowiredTest extends AutowireTestCase
     {
         $this->expectExceptionMessage("It is not possible to initialize a reserved type.");
         $this->expectException(InvalidArgumentException::class);
-        new class {
-
-            use AutowiredHandler;
-
-            #[Autowired]
-            private int $type;
-        };
+        $this->container->get(ReservedTypeInt::class);
     }
 
     /**
@@ -104,13 +90,7 @@ class AutowiredTest extends AutowireTestCase
     {
         $this->expectExceptionMessage("It is not possible to initialize a reserved type.");
         $this->expectException(InvalidArgumentException::class);
-        new class {
-
-            use AutowiredHandler;
-
-            #[Autowired]
-            private bool $type;
-        };
+        $this->container->get(ReservedTypeBool::class);
     }
 
     /**
@@ -120,13 +100,7 @@ class AutowiredTest extends AutowireTestCase
     {
         $this->expectExceptionMessage("It is not possible to initialize a reserved type.");
         $this->expectException(InvalidArgumentException::class);
-        new class {
-
-            use AutowiredHandler;
-
-            #[Autowired]
-            private \stdClass $type;
-        };
+        $this->container->get(ReservedTypeStdClass::class);
     }
 
     /**
@@ -136,13 +110,7 @@ class AutowiredTest extends AutowireTestCase
     {
         $this->expectExceptionMessage("It is not possible to initialize a reserved type.");
         $this->expectException(InvalidArgumentException::class);
-        new class {
-
-            use AutowiredHandler;
-
-            #[Autowired]
-            private float $type;
-        };
+        $this->container->get(ReservedTypeFloat::class);
     }
 
     /**
@@ -152,12 +120,6 @@ class AutowiredTest extends AutowireTestCase
     {
         $this->expectExceptionMessage("It is not possible to initialize a reserved type.");
         $this->expectException(InvalidArgumentException::class);
-        new class {
-
-            use AutowiredHandler;
-
-            #[Autowired]
-            private object $type;
-        };
+        $this->container->get(ReservedTypeObject::class);
     }
 }

@@ -7,6 +7,7 @@ use Autowired\Autowired;
 use Autowired\DependencyContainer;
 use Autowired\Exception\InterfaceArgumentException;
 use Autowired\Exception\InvalidArgumentException;
+use Autowired\ReservedTypes;
 use ReflectionClass;
 use ReflectionException;
 use ReflectionNamedType;
@@ -17,16 +18,6 @@ use Autowired\Utils\ListCollection;
 
 class AutowireHandler
 {
-    private array $reservedTypes = [
-        "array",
-        "string",
-        "int",
-        "bool",
-        "float",
-        "object",
-        "stdClass",
-    ];
-
     private DependencyContainer $container;
 
     private Collection $customHandlers;
@@ -147,7 +138,7 @@ class AutowireHandler
         }
         $type = $classType->getName();
 
-        if (in_array($type, $this->reservedTypes, true)) {
+        if (ReservedTypes::isReservedType($type)) {
             throw new InvalidArgumentException('It is not possible to initialize a reserved type.');
         }
 
