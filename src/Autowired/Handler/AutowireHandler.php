@@ -155,7 +155,7 @@ class AutowireHandler
     {
         $typed = new ReflectionClass($type);
 
-        if ($typed->isInterface() && $this->container->hasInterfaceHandler()) {
+        if ($typed->isInterface() && $this->container->hasInterfaceHandler() && !$autowiredAttribute->hasStaticFunction()) {
             $object = $this->container->getInterfaceHandler()->autowire($autowiredAttribute, $typed);
         } elseif ($typed->isInterface() && !$this->container->hasInterfaceHandler()) {
             $className = $autowiredAttribute->getConcreteClass();
@@ -164,6 +164,9 @@ class AutowireHandler
             }
 
             $object = $className;
+        } elseif ($typed->isInterface() && $autowiredAttribute->hasStaticFunction()) {
+            $concreteClass = $autowiredAttribute->getConcreteClass();
+            $object = $concreteClass;
         } else {
             $object = $typed->getName();
         }
