@@ -154,27 +154,43 @@ class AutowireHandler
     protected function getObject(string $type, Autowired $autowiredAttribute): string
     {
         $typed = new ReflectionClass($type);
+        $object = null;
 
-        if ($typed->isInterface()
-            && $this->container->hasInterfaceHandler()
-            && !$autowiredAttribute->hasStaticFunction()
-            && !$autowiredAttribute->getConcreteClass()
-        ) {
-            $object = $this->container->getInterfaceHandler()->autowire($autowiredAttribute, $typed);
-        } elseif ($typed->isInterface() && !$this->container->hasInterfaceHandler()) {
-            $className = $autowiredAttribute->getConcreteClass();
-            if (empty($className)) {
-                throw new InvalidArgumentException('It is not possible to initialize a pure interface.');
+        if ($typed->isInterface()) {
+            if ($this->useInterfaceHandler($autowiredAttribute)) {
+                $object = $this->container->getInterfaceHandler()->autowire($autowiredAttribute, $typed);
+            } elseif ($this->useConcreteClass($autowiredAttribute)) {
+                $object = $autowiredAttribute->getConcreteClass();
+            } elseif ($this->useStaticMethod($autowiredAttribute)) {
+                $concreteClass = $autowiredAttribute->getConcreteClass();
+                $method = $autowiredAttribute->getStaticFunction();
+                $object = call_user_func([$concreteClass, $method]);
             }
 
-            $object = $className;
-        } elseif ($typed->isInterface() && $autowiredAttribute->hasStaticFunction()) {
-            $concreteClass = $autowiredAttribute->getConcreteClass();
-            $object = $concreteClass;
+            if (empty($object)) {
+                throw new InvalidArgumentException('It is not possible to initialize a pure interface.');
+            }
         } else {
             $object = $typed->getName();
         }
 
         return $object;
+    }
+
+    private function useInterfaceHandler(Autowired $autowiredAttribute): bool
+    {
+        return $this->container->hasInterfaceHandler()
+            && !$autowiredAttribute->hasStaticFunction()
+            && !$autowiredAttribute->getConcreteClass();
+    }
+
+    private function useConcreteClass(Autowired $autowiredAttribute): bool
+    {
+        return !empty($autowiredAttribute->getConcreteClass());
+    }
+
+    private function useStaticMethod(Autowired $autowiredAttribute): bool
+    {
+        return $this->useConcreteClass($autowiredAttribute) && $autowiredAttribute->hasStaticFunction();
     }
 }
