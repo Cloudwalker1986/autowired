@@ -65,7 +65,6 @@ class AutowireHandler
         $e = null;
 
         try {
-            $property->setAccessible(true);
             $e = $property->getValue($object);
         } catch (Throwable $e) {
             $e = null;
@@ -85,8 +84,14 @@ class AutowireHandler
             /** @var Autowired $autowiredAttribute */
             $autowiredAttribute = $attribute->newInstance();
 
+            $type = $property->getType()->getName();
+
+            if ($this->container->contains($type)) {
+                $property->setValue($object, $this->container->get($type));
+                continue;
+            }
+
             $type = $this->getObjectType($property, $autowiredAttribute);
-            $property->setAccessible(true);
 
             if ($this->container->contains($type)) {
                 $property->setValue($object, $this->container->get($type));

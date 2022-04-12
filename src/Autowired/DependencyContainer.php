@@ -109,7 +109,6 @@ class DependencyContainer
             foreach ($properties as $property) {
                 $extends = class_parents($argument);
                 if ($property->getType() instanceof $argument || isset($extends[$property->getType()->getName()])) {
-                    $property->setAccessible(true);
                     $property->setValue($object, $argument);
                 }
             }

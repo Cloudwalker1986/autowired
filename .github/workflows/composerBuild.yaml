@@ -1,4 +1,4 @@
-name: PHP Composer
+name: Composer
 
 on:
   push:
@@ -23,13 +23,3 @@ jobs:
           key: ${{ runner.os }}-php-${{ hashFiles('**/composer.lock') }}
           restore-keys: |
             ${{ runner.os }}-php-
-  tests:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-      
-      - name: Install dependencies
-        run: composer install --prefer-dist --no-progress
-
-      - name: Run tests
-        run: composer run-script all-tests

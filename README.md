@@ -1,3 +1,5 @@
+[![Tests](https://github.com/Cloudwalker1986/autowired/actions/workflows/phpunit.yaml/badge.svg)](https://github.com/Cloudwalker1986/autowired/actions/workflows/phpunit.yaml)
+[![Composer](https://github.com/Cloudwalker1986/autowired/actions/workflows/composerBuild.yaml/badge.svg)](https://github.com/Cloudwalker1986/autowired/actions/workflows/composerBuild.yaml)
 # Autowired
 With the new Autowired component you have now the possibility to easily load all your dependencies during construction of your main object.  
 
