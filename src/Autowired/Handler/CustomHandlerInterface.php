@@ -5,5 +5,5 @@ namespace Autowired\Handler;
 
 interface CustomHandlerInterface
 {
-    public function handle(object $object): void;
+    public function handle(string|object $object): null|object;
 }
