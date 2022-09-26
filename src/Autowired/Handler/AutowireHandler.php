@@ -31,9 +31,11 @@ class AutowireHandler
         $this->customHandlers = new ListCollection();
     }
 
-    public function addCustomHandler(CustomHandlerInterface $handler): void
+    public function addCustomHandler(CustomHandlerInterface $handler): self
     {
         $this->customHandlers->add($handler);
+
+        return $this;
     }
 
     /**

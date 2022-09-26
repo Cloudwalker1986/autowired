@@ -3,29 +3,34 @@ declare(strict_types=1);
 
 namespace Autowired;
 
-use Autowired\Handler\AfterConstructHandler;
-use Autowired\Handler\AutowireHandler;
-use Autowired\Handler\CustomHandlerInterface;
-use Autowired\Handler\InterfaceHandler;
-use Autowired\Utils\HashMap;
-use Autowired\Utils\Map;
-use PHPUnit\Framework\MockObject\MockObject;
+use ReflectionClass;
+use RuntimeException;
 use ReflectionException;
+use Autowired\Utils\Map;
+use Autowired\Utils\HashMap;
+use Autowired\Handler\AutowireHandler;
+use Autowired\Handler\InterfaceHandler;
+use Autowired\Handler\AfterConstructHandler;
+use Autowired\Handler\BeforeConstructHandler;
+use Autowired\Handler\CustomHandlerInterface;
 
 class DependencyContainer
 {
+    private static ?DependencyContainer $instance = null;
+
     private Map $cache;
 
     private ?InterfaceHandler $interfaceHandler = null;
 
     private AutowireHandler $autowireHandler;
 
-    private static ?DependencyContainer $instance = null;
+    private BeforeConstructHandler $beforeConstructHandler;
 
     private function __construct()
     {
         $this->autowireHandler = new AutowireHandler($this);
         $this->autowireHandler->addCustomHandler(new AfterConstructHandler());
+        $this->beforeConstructHandler = new BeforeConstructHandler();
         $this->cache = new HashMap();
     }
 
@@ -33,13 +38,21 @@ class DependencyContainer
      * @throws Exception\InterfaceArgumentException
      * @throws ReflectionException
      */
-    public function get(string $className, array $arguments = []): object
+    public function get(
+        string $className,
+        array $arguments = [],
+        array $argumentForHook = []
+    ): object
     {
         if ($this->cache->has($className)) {
             return $this->cache->get($className);
         }
 
-        $object = new $className();
+        $object = $this->beforeConstructHandler->handle($className, $argumentForHook);
+
+        if (empty($object)) {
+            $object = new $className();
+        }
 
         if (!empty($arguments)) {
             $this->defineArguments($arguments, $object);
@@ -74,7 +87,7 @@ class DependencyContainer
             return;
         }
 
-        throw new \RuntimeException('Only one interface handler can be defined.');
+        throw new RuntimeException('Only one interface handler can be defined.');
     }
 
     public function hasInterfaceHandler(): bool
@@ -104,7 +117,7 @@ class DependencyContainer
 
     private function defineArguments(array $arguments, object $object): void
     {
-        $properties = (new \ReflectionClass($object))->getProperties();
+        $properties = (new ReflectionClass($object))->getProperties();
         foreach ($arguments as $argument) {
             foreach ($properties as $property) {
                 $extends = class_parents($argument);

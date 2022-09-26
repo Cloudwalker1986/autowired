@@ -229,3 +229,65 @@ class AutoloadWithHooksTest extends AutowireTestCase
     }
 }
 ```
+
+With the version 2.2.0 we rolled out the hook of BeforeConstruct
+This attribute will ensure that your method will be executed once before your object got full instantiated.  
+This attribute could be used for the singleton pattern if you would like to get an object with `AnyObject::getInstance()` method 
+
+
+```php
+
+class FooBar
+{
+    private static $instance = null;
+
+    private int $value;
+
+    public function __construct(int $value)
+    {
+        $this->value = $value;
+    }
+
+    public function getValue(): int
+    {
+        return $this->value;
+    }
+
+    #[BeforeConstruct]
+    public static function onBeforeInstance(): FooBar
+    {
+        if (self::$instance === null) {
+            self::$instance = new self(400);
+        }
+
+        return self::$instance;
+    }
+}
+
+
+class AutoloadWithHooksTest extends AutowireTestCase
+{    
+    /**
+     * @test
+     */
+    public function beforeConstructCaseOne(): void
+    {
+        $this->assertEquals(0, (new FooBar(0))->getValue());
+        /** @var FooBar $fooBar */
+        $fooBar = $this->container->get(FooBar::class);
+
+        $this->assertEquals(400, $fooBar->getValue());
+    }
+    
+     /**
+     * @test
+     */
+    public function beforeConstructCaseTwo(): void
+    {
+        /** @var FooBarFoo $fooBar */
+        $fooBar = $this->container->get(FooBarFoo::class, argumentForHook: [200]);
+
+        $this->assertEquals(200, $fooBar->getValue());
+    }
+}
+```

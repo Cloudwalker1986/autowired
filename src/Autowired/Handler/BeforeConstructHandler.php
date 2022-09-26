@@ -3,11 +3,12 @@ declare(strict_types=1);
 
 namespace Autowired\Handler;
 
-use Autowired\Attribute\AfterConstruct;
+use Autowired\Attribute\BeforeConstruct;
+use Autowired\Exception\BeforeConstructException;
 use ReflectionClass;
 use ReflectionException;
 
-class AfterConstructHandler implements CustomHandlerInterface
+class BeforeConstructHandler implements CustomHandlerInterface
 {
     /**
      * @throws ReflectionException
@@ -15,6 +16,8 @@ class AfterConstructHandler implements CustomHandlerInterface
     public function handle(string|object $object, array $arguments = []): null|object
     {
         $reflection = new ReflectionClass($object);
+
+        $value = null;
 
         foreach ($reflection->getMethods() as $method) {
             if (!$method->isPublic()) {
@@ -25,12 +28,15 @@ class AfterConstructHandler implements CustomHandlerInterface
 
                 $attrInstance = $attribute->newInstance();
 
-                if ($attrInstance instanceof AfterConstruct) {
-                    $object->{$method->getName()}();
+                if ($attrInstance instanceof BeforeConstruct) {
+                    if (!$method->isStatic()) {
+                        throw new BeforeConstructException('BeforeConstruct is only allowed for public static methods.');
+                    }
+                    $value =  call_user_func_array([$object, $method->getName()], $arguments);
                 }
             }
         }
 
-        return null;
+        return $value;
     }
 }
