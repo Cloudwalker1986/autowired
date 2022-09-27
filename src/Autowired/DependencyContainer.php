@@ -24,7 +24,7 @@ class DependencyContainer
 
     private AutowireHandler $autowireHandler;
 
-    private BeforeConstructHandler $beforeConstructHandler;
+    private ?BeforeConstructHandler $beforeConstructHandler;
 
     private function __construct()
     {
@@ -104,6 +104,7 @@ class DependencyContainer
     {
         $this->cache->flush();
         $this->interfaceHandler = null;
+        $this->beforeConstructHandler = null;
     }
 
     public static function getInstance(): DependencyContainer
